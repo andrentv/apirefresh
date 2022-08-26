@@ -5,15 +5,15 @@ import { GenerateRefreshToken } from "../../provider/GenerateRefreshToken";
 import { GenerateTokenProvider } from "../../provider/GenerateTokenProvider";
 
 interface IRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 class AuthenticateUserUseCase {
-  async execute({ username, password }: IRequest) {
+  async execute({ email, password }: IRequest) {
     const userAlreadyExists = await client.user.findFirst({
       where: {
-        username,
+        email,
       },
     });
 

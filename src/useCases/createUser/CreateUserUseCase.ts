@@ -4,14 +4,14 @@ import { hash } from "bcryptjs";
 interface IUserRequest {
   name: string;
   password: string;
-  username: string;
+  email: string;
 }
 
 class CreateUserUseCase {
-  async execute({ name, username, password }: IUserRequest) {
+  async execute({ name, email, password }: IUserRequest) {
     const userAlreadyExists = await client.user.findFirst({
       where: {
-        username,
+        email,
       },
     });
 
@@ -24,7 +24,7 @@ class CreateUserUseCase {
     const user = await client.user.create({
       data: {
         name,
-        username,
+        email,
         password: passwordHash,
       },
     });

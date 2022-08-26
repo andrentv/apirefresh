@@ -14,13 +14,13 @@ router.post("/user", createUserController.handle);
 router.post("/login", authenticateUserController.handle);
 router.post("/auth/refresh", refreshTokenUserController.handle);
 
-router.get("/courses", ensureAuthenticated, (request, response) => {
-  //router.get("/courses", (request, response) => {
+router.get("/barbers", ensureAuthenticated, (request, response) => {
+//router.get("/barbers", (request, response) => {
   return response.json([
-    { id: 1, name: "AAA" },
-    { id: 2, name: "BBB" },
-    { id: 3, name: "CCC" },
-    { id: 4, name: "DDD" },
+    { id: 1, name: "Andre Vaccaro", avatar: "https://picsum.photos/200", stars: 1.5, photo: "https://picsum.photos/200" },
+    { id: 2, name: "Luis Vaccaro", avatar: "https://picsum.photos/200", stars: 1.5, photo: "https://picsum.photos/200" },
+    { id: 3, name: "João Vaccaro", avatar: "https://picsum.photos/200", stars: 1.5, photo: "https://picsum.photos/200" },
+    { id: 4, name: "Pedro Vaccaro", avatar: "https://picsum.photos/200", stars: 1.5, photo: "https://picsum.photos/200" },
   ]);
 });
 
