@@ -2,30 +2,130 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
+}
+
+generator erd {
+    provider = "prisma-erd-generator"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-	id 				  String 			@id 			@default(uuid())
-	name			  String
-	email 		  String			@unique
-	password 		String
-	avatar			String							@default("https://picsum.photos/200")
-	refresh_token	RefreshToken?
-	
-	@@map("user")
+    id       String @id @default(uuid())
+    name     String
+    email    String @unique
+    password String
+    avatar   String @default("https://picsum.photos/200")
+
+    refresh_token RefreshToken?
+
+    created_at  DateTime      @default(now())
+    Testimonial Testimonial[]
+    Appointment Appointment[]
+
+    @@map("user")
 }
 
 model RefreshToken {
-	id				String			@id 		@default(uuid())
-	expiresIn		Int
-	user			User						@relation(fields: [userId], references: [id])
-	userId			String			@unique
-	
-	@@map("refresh_token")
+    id        String @id @default(uuid())
+    expiresIn Int
+    user      User   @relation(fields: [userId], references: [id])
+    userId    String @unique
+
+    @@map("refresh_token")
+}
+
+model Barber {
+    id         String   @id @default(uuid())
+    name       String
+    email      String   @unique
+    avatar     String   @default("https://picsum.photos/200")
+    stars      Decimal
+    favorited  Boolean  @default(false)
+    cidade     String
+    created_at DateTime @default(now())
+
+    Photo       Photo[]
+    Service     Service[]
+    Available   Available[]
+    Testimonial Testimonial[]
+    Appointment Appointment[]
+
+    @@map("barbers")
+}
+
+model Available {
+    id         String   @id @default(uuid())
+    dia        DateTime @db.Date
+    hora       DateTime @db.Time()
+    barber_id  String
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now())
+
+    barbers Barber @relation(fields: [barber_id], references: [id])
+
+    @@map("availables")
+}
+
+model Photo {
+    id         String   @id @default(uuid())
+    item       String
+    created_at DateTime @default(now())
+    barber_id  String
+
+    barbers Barber @relation(fields: [barber_id], references: [id])
+
+    @@map("photos")
+}
+
+model Service {
+    id         String   @id @default(uuid())
+    item       String
+    price      Decimal
+    //barber_id      String?
+    //appointment_id String?
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now())
+
+    //barbers      Barber? 
+    //appointments Appointment? @relation(fields: [appointment_id], references: [id])
+    Barber        Barber?      @relation(fields: [barberId], references: [id])
+    barberId      String?
+    Appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+    appointmentId String?
+
+    @@map("services")
+}
+
+model Testimonial {
+    id          String   @id @default(uuid())
+    description String
+    barber_id   String   @unique
+    user_id     String
+    created_at  DateTime @default(now())
+
+    barbers Barber @relation(fields: [barber_id], references: [id])
+    user    User   @relation(fields: [user_id], references: [id])
+
+    @@map("testimonials")
+}
+
+model Appointment {
+    id         String    @id @default(uuid())
+    dia        DateTime  @db.Date
+    hora       DateTime  @db.Time
+    Service    Service[]
+    barber_id  String    @unique
+    user_id    String
+    created_at DateTime  @default(now())
+    updated_at DateTime  @default(now())
+
+    barbers Barber? @relation(fields: [barber_id], references: [id])
+    user    User?   @relation(fields: [user_id], references: [id])
+
+    @@map("appointments")
 }
