@@ -52,27 +52,26 @@ model Barber {
     Photo       Photo[]
     Service     Service[]
     Available   Available[]
-    Testimonial Testimonial[]
     Appointment Appointment[]
+    Testimonial Testimonial[]
 
     @@map("barbers")
 }
 
 model Available {
-    id         String   @id @default(uuid())
+    id         Int      @id @default(autoincrement())
     dia        DateTime @db.Date
     hora       DateTime @db.Time()
-    barber_id  String
     created_at DateTime @default(now())
     updated_at DateTime @default(now())
 
-    barbers Barber @relation(fields: [barber_id], references: [id])
+    barbers Barber[]
 
     @@map("availables")
 }
 
 model Photo {
-    id         String   @id @default(uuid())
+    id         Int      @id @default(autoincrement())
     item       String
     created_at DateTime @default(now())
     barber_id  String
@@ -83,28 +82,22 @@ model Photo {
 }
 
 model Service {
-    id         String   @id @default(uuid())
+    id         Int      @id @default(autoincrement())
     item       String
     price      Decimal
-    //barber_id      String?
-    //appointment_id String?
     created_at DateTime @default(now())
     updated_at DateTime @default(now())
 
-    //barbers      Barber? 
-    //appointments Appointment? @relation(fields: [appointment_id], references: [id])
-    Barber        Barber?      @relation(fields: [barberId], references: [id])
-    barberId      String?
-    Appointment   Appointment? @relation(fields: [appointmentId], references: [id])
-    appointmentId String?
+    Barber      Barber[]
+    Appointment Appointment[]
 
     @@map("services")
 }
 
 model Testimonial {
-    id          String   @id @default(uuid())
+    id          Int      @id @default(autoincrement())
     description String
-    barber_id   String   @unique
+    barber_id   String
     user_id     String
     created_at  DateTime @default(now())
 
@@ -115,17 +108,17 @@ model Testimonial {
 }
 
 model Appointment {
-    id         String    @id @default(uuid())
-    dia        DateTime  @db.Date
-    hora       DateTime  @db.Time
+    id         Int       @id @default(autoincrement())
+    dia        DateTime  @db.Date()
+    hora       DateTime  @db.Time()
     Service    Service[]
-    barber_id  String    @unique
+    barber_id  String
     user_id    String
     created_at DateTime  @default(now())
     updated_at DateTime  @default(now())
 
-    barbers Barber? @relation(fields: [barber_id], references: [id])
-    user    User?   @relation(fields: [user_id], references: [id])
+    barbers Barber @relation(fields: [barber_id], references: [id])
+    user    User?  @relation(fields: [user_id], references: [id])
 
     @@map("appointments")
 }
